@@ -1,14 +1,25 @@
 <template>
   <div :class="$style.toDoListContainer">
-    <!-- <input type="text" value /> -->
+    <div :class="$style.toDoInputContainer">
+      <input
+        type="text"
+        ref="toDoInput"
+        :class="$style.toDoInput"
+        :value="toDoText"
+        @input="e => setToDoText(e.target.value)"
+        @keyup.enter="toDoText && addItem(toDoText)"
+      />
+      <span :class="$style.addButton" @click="toDoText && addItem(toDoText)">Add</span>
+    </div>
     <div :class="$style.toDoList">
-      <div
-        :class="$style.toDoListItem"
-        v-for="toDoItem in toDoList"
-        :key="toDoItem.id"
-      >
-        <span :class="[toDoItem.isComplete ? $style.completeText : '', $style.itemText]">{{ toDoItem.text }}</span>
-        <span :class="[toDoItem.isComplete ? $style.doneButton : $style.incompleteButton, $style.button]" @click="completeItem(toDoItem)" />
+      <div :class="$style.toDoListItem" v-for="toDoItem in toDoList" :key="toDoItem.id">
+        <span
+          :class="[toDoItem.isComplete ? $style.completeText : '', $style.itemText]"
+        >{{ toDoItem.text }}</span>
+        <span
+          :class="[toDoItem.isComplete ? $style.doneButton : $style.incompleteButton, $style.button]"
+          @click="completeItem(toDoItem)"
+        />
       </div>
     </div>
   </div>
@@ -16,11 +27,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { COMPLETE_ITEM } from '@/store/actions';
+import { SET_TO_DO_TEXT, ADD_ITEM, COMPLETE_ITEM } from '@/store/actions';
 
 export default {
-  computed: mapState(['toDoList']),
-  methods: mapActions([COMPLETE_ITEM])
+  name: 'ToDoList',
+  computed: mapState(['toDoList', 'toDoText']),
+  methods: mapActions([SET_TO_DO_TEXT, ADD_ITEM, COMPLETE_ITEM]),
+  mounted() {
+    this.$refs.toDoInput.focus();
+  }
 };
 </script>
 
@@ -28,6 +43,31 @@ export default {
 @import "@/styles/colors";
 
 .toDoListContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .toDoInputContainer {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    padding: 5px;
+
+    .toDoInput {
+      padding: 5px;
+      width: 70%;
+    }
+
+    .addButton {
+      background: $vueGreen;
+      border: 2px solid black;
+      cursor: pointer;
+      margin-left: 5px;
+      padding: 5px 10px;
+      user-select: none;
+    }
+  }
+
   .toDoList {
     border-radius: 5px;
     color: black;
@@ -59,20 +99,21 @@ export default {
         align-self: flex-end;
         border-left: 2px solid black;
         border-radius: 0 5px 5px 0;
-        cursor: pointer;
         display: flex;
         font-weight: bold;
         height: 100%;
         justify-content: center;
         padding: 0 10px;
+        user-select: none;
         width: 15px;
       }
 
       .incompleteButton {
         background: #666666;
+        cursor: pointer;
 
         &::before {
-          content: '—';
+          content: "—";
         }
       }
 
@@ -80,7 +121,7 @@ export default {
         background: $vueGreen;
 
         &::before {
-          content: '✓';
+          content: "✓";
         }
       }
     }
