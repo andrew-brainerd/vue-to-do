@@ -15,13 +15,23 @@ const initialState = {
     },
     {
       id: uuid(),
+      text: 'Build First Vue Application',
+      isComplete: true
+    },
+    {
+      id: uuid(),
       text: 'Research Vuex Organization',
       isComplete: false
     },
     {
       id: uuid(),
-      text: 'Build First Vue Application',
-      isComplete: true
+      text: 'Take Out the Trash',
+      isComplete: false
+    },
+    {
+      id: uuid(),
+      text: 'Take a Shower',
+      isComplete: false
     }
   ]
 };
